@@ -1,0 +1,4 @@
+pip
+pylint==2.4.4
+Click==7.0
+Flask==1.0.2
