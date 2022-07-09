@@ -16,6 +16,7 @@ jobs:
           name: Install dependencies and Lint app
           command: |
             sudo apt-get update
+            sudo apt-get install libuv1.dev
             sudo apt-get install python3-venv
             python3 -m venv virtualenv
             . virtualenv/bin/activate
