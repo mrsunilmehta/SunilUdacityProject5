@@ -83,17 +83,7 @@ jobs:
   install-eks-kube:
     executor: aws-eks/python3
     steps:
-      - run:
-          name: Install the eksctl tool
-          command: |
-            if which eksctl > /dev/null; then
-              echo "eksctl is already installed"
-              exit 0
-            else
-              exit 1
-            fi
-            - kubernetes/install
-            
+      - kubernetes/install
 
   create-eks-cluster:
     executor: aws-eks/python3
@@ -159,6 +149,8 @@ workflows:
     jobs:
       - install
       - install-eks-kube
+          requires:
+            - install        
       - push-image:
           requires:
             - install      
