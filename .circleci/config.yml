@@ -13,15 +13,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies and Lint
+          name: Install dependencies
           command: |
             sudo apt-get update
             sudo apt-get install libuv1.dev
             sudo apt-get install python3-venv
-            python3 -m venv virtualenv
-            . virtualenv/bin/activate
+            make setup
             make install
-            #make lint
 
 workflows:
   deployment:
