@@ -21,7 +21,7 @@ jobs:
             python3 -m venv virtualenv
             . virtualenv/bin/activate
             make install
-            make lint
+            #make lint
 
 workflows:
   deployment:
