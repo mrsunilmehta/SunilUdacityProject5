@@ -20,6 +20,7 @@ jobs:
             sudo apt-get install python3-venv
             make setup
             make install
+            make env
 
 workflows:
   deployment:
