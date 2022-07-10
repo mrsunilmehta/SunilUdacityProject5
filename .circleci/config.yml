@@ -33,7 +33,7 @@ jobs:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-                  
+
       - run:
           name: Install dependencies
           command: |
@@ -75,10 +75,111 @@ jobs:
       # Here's where you will add some code to rollback on failure
       - delete-image      
 
+
+  install-eks-kube:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          SunilEKSCluster
+        type: string
+        
+    steps:
+      - run:
+          name: Install the eksctl tool
+          command: |
+            if which eksctl > /dev/null; then
+              echo "eksctl is already installed"
+              exit 0
+            fi
+            mkdir -p eksctl_download
+            curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+              | tar xz -C eksctl_download
+            chmod +x eksctl_download/eksctl
+            SUDO=""
+            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+              SUDO="sudo"
+            fi
+            $SUDO mv eksctl_download/eksctl /usr/local/bin/
+            rmdir eksctl_download
+      - kubernetes/install
+            
+
+  create-eks-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Sunil EKS Cluster
+        type: string
+        
+    steps:
+      - aws-eks/create-cluster:
+          cluster-name: << parameters.cluster-name >>
+          aws-region: ${AWS_DEFAULT_REGION}
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+          aws-region: ${AWS_DEFAULT_REGION}          
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment/project5-app-deployment.yml
+          resource-name: deployment/sunilproject5  
+      - kubernetes/create-or-update-resource:
+          resource-file-path: deployment/project5-lb.yml
+          resource-name: deployment/sunilproject5                   
+
+
+  test-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Testing EKS cluster
+        type: string
+    steps:
+      - run:
+          name: Test cluster
+          command: |
+            # some time for creation
+            sleep 51          
+            kubectl get svc
+            kubectl get nodes
+            kubectl get deployment
+            kubectl get pods -o wide            
+
+  delete-eks-cluster:
+      executor: aws-eks/python3
+      parameters:
+        cluster-name:
+          description: |
+            deleting EKS cluster
+          type: string
+      
+    steps:
+      - aws-eks/delete-cluster:
+          cluster-name: << parameters.cluster-name >>
+          aws-region: ${AWS_DEFAULT_REGION}
+          wait: true            
+
+
 workflows:
   deployment:
     jobs:
       - install
+      - install-eks-kube
       - push-image:
           requires:
             - install      
+      - create-eks-cluster:
+          requires:
+            - install-eks-kube       
+            cluster-name: sunil-eks-cluster      
+      - test-cluster:
+          requires:
+            - create-eks-cluster          
+          cluster-name: sunil-eks-cluster
+      - delete-cluster:
+          cluster-name: sunil-eks-cluster
+          requires:
+            - test-cluster          
