@@ -1,4 +1,8 @@
+import logging
 from flask import Flask           # import flask
+from flask.logging import create_logger
+
+
 app = Flask(__name__)             # create an app instance
 
 LOG = create_logger(app)
