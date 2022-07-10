@@ -1,3 +1,4 @@
+# Sunil Mehta Project 5
 version: 2.1
 executors:
   python:
@@ -24,7 +25,28 @@ jobs:
             make env
             make lint
 
+  push-image:
+    machine: true
+    working_directory: ~/app
+    steps:
+      - checkout
+      - run:
+          # Build, tag and push my docker image to docker hub
+          name: Push my docker image to docker hub
+          command: |
+            # Define Docker user name and password as env  variables in circleci          
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PWD}
+            # Build docker image                       
+            docker build -t mrsunilmehta/project5:${CIRCLE_WORKFLOW_ID:0:5} .
+            # Tag image before pushing
+            docker tag mrsunilmehta/project5:${CIRCLE_WORKFLOW_ID:0:5} mrsunilmehta/project5:latest
+            # Push to docker hub            
+            docker push mrsunilmehta/project5:latest            
+
 workflows:
   deployment:
     jobs:
       - install
+      - push-image:
+          requires:
+            - install      
