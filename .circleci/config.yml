@@ -8,12 +8,12 @@ executors:
       - image: amazon/aws-cli
 
 jobs:
-  lint-app:
+  install:
     executor: python
     steps:
       - checkout
       - run:
-          name: Install dependencies and Lint app
+          name: Install dependencies and Lint
           command: |
             sudo apt-get update
             sudo apt-get install libuv1.dev
@@ -26,4 +26,4 @@ jobs:
 workflows:
   deployment:
     jobs:
-      - lint-app
+      - install
