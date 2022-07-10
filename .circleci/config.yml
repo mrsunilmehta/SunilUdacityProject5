@@ -148,12 +148,12 @@ workflows:
   deployment:
     jobs:
       - install
-      - install-eks-kube
-          requires:
-            - install        
       - push-image:
           requires:
             - install      
+      - install-eks-kube:
+          requires:
+            - install               
       - create-eks-cluster:
           cluster-name: sunil-eks-cluster      
           requires:
