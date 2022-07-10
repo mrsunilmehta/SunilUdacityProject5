@@ -80,7 +80,7 @@ jobs:
       - delete-image      
 
 
-  install-eks-kube:
+  install-eks-kubernetes:
     executor: aws-eks/python3
     steps:
       - kubernetes/install
@@ -151,13 +151,13 @@ workflows:
       - push-image:
           requires:
             - install      
-      - install-eks-kube:
+      - install-eks-kubernetes:
           requires:
             - install               
       - create-eks-cluster:
           cluster-name: sunil-eks-cluster      
           requires:
-            - install-eks-kube       
+            - install-eks-kubernetes       
       - test-cluster:
           cluster-name: sunil-eks-cluster
           requires:
