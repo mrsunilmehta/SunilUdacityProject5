@@ -18,7 +18,8 @@ jobs:
             sudo apt-get update
             sudo apt-get install libuv1.dev
             sudo apt-get install python3-venv
-            make setup
+            python3 -m venv virtualenv
+            . virtualenv/bin/activate
             make install
             make env
 
