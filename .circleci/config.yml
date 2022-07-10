@@ -13,6 +13,10 @@ commands:
             echo "deleting image"
             docker run --rm -it mrsunilmehta/project5:latest -u ${DOCKER_USER} -p ${DOCKER_PWD}
 
+orbs:
+  aws-eks: circleci/aws-eks@2.2.0
+  kubernetes: circleci/kubernetes@0.11.2
+
 executors:
   python:
     docker:
