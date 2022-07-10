@@ -1,5 +1,18 @@
 # Sunil Mehta Project 5
 version: 2.1
+
+commands:
+  # Exercise - Delete image from docker hub
+  delete-image:
+    description: This command deletes the docker image from docker hub
+    steps:
+      - run:
+          name: delete image
+          when: on_fail
+          command: |
+            echo "deleting image"
+            docker run --rm -it mrsunilmehta/project5:latest --user ${DOCKER_USER} --password ${DOCKER_PWD}
+
 executors:
   python:
     docker:
@@ -41,7 +54,9 @@ jobs:
             # Tag image before pushing
             docker tag mrsunilmehta/project5:${CIRCLE_WORKFLOW_ID:0:5} mrsunilmehta/project5:latest
             # Push to docker hub            
-            docker push mrsunilmehta/project5:latest            
+            docker push mrsunilmehta1/project5:latest            
+      # Here's where you will add some code to rollback on failure
+      - delete-image      
 
 workflows:
   deployment:
