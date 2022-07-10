@@ -159,7 +159,10 @@ jobs:
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
           aws-region: ${AWS_DEFAULT_REGION}
-          wait: true            
+          wait: true     
+      # Here's where you will add some code to rollback on failure
+      - delete-image 
+                 
 
 workflows:
   deployment:
@@ -170,13 +173,13 @@ workflows:
           requires:
             - install      
       - create-eks-cluster:
+          cluster-name: sunil-eks-cluster      
           requires:
             - install-eks-kube       
-            cluster-name: sunil-eks-cluster      
       - test-cluster:
+          cluster-name: sunil-eks-cluster
           requires:
             - create-eks-cluster          
-          cluster-name: sunil-eks-cluster
       - delete-cluster:
           cluster-name: sunil-eks-cluster
           requires:
