@@ -22,6 +22,7 @@ jobs:
             . virtualenv/bin/activate
             make install
             make env
+            make lint
 
 workflows:
   deployment:
