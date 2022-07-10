@@ -2,7 +2,7 @@
 
 setup:
 	python3 -m venv virtualenv
-	./virtualenv/bin/activate 
+	source ~/.virtualenv/bin/activate 
 
 install:
 # This should be run from inside a virtualenv
