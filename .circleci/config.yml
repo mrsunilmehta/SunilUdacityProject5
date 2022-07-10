@@ -78,12 +78,6 @@ jobs:
 
   install-eks-kube:
     executor: aws-eks/python3
-    parameters:
-      cluster-name:
-        description: |
-          SunilEKSCluster
-        type: string
-        
     steps:
       - run:
           name: Install the eksctl tool
