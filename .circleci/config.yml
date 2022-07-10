@@ -11,7 +11,7 @@ commands:
           when: on_fail
           command: |
             echo "deleting image"
-            docker run --rm -it mrsunilmehta/project5:latest --user ${DOCKER_USER} --password ${DOCKER_PWD}
+            docker run --rm -it mrsunilmehta/project5:latest -u ${DOCKER_USER} -p ${DOCKER_PWD}
 
 executors:
   python:
@@ -26,6 +26,14 @@ jobs:
     executor: python
     steps:
       - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+                  
       - run:
           name: Install dependencies
           command: |
@@ -36,6 +44,15 @@ jobs:
             . virtualenv/bin/activate
             make install
             make env
+      - save_cache:
+          paths:
+            - ./virtualenv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+      
+      - run:
+          name: run lint
+          command: |
+            . virtualenv/bin/activate
             make lint
 
   push-image:
@@ -54,7 +71,7 @@ jobs:
             # Tag image before pushing
             docker tag mrsunilmehta/project5:${CIRCLE_WORKFLOW_ID:0:5} mrsunilmehta/project5:latest
             # Push to docker hub            
-            docker push mrsunilmehta1/project5:latest            
+            docker push mrsunilmehta/project5:latest            
       # Here's where you will add some code to rollback on failure
       - delete-image      
 
