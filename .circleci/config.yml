@@ -149,19 +149,17 @@ jobs:
             kubectl get pods -o wide            
 
   delete-eks-cluster:
-      executor: aws-eks/python3
-      parameters:
-        cluster-name:
-          description: |
-            deleting EKS cluster
-          type: string
-      
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          deleting EKS cluster
+        type: string
     steps:
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
           aws-region: ${AWS_DEFAULT_REGION}
           wait: true            
-
 
 workflows:
   deployment:
