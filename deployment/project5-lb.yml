@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: sunilapp
   labels:
-    app: sunilapp   
+    app: sunilapp  
+  namespace: default        
 spec:
   type: LoadBalancer
   ports:

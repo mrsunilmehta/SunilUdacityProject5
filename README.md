@@ -27,6 +27,38 @@ Your project goal is to operationalize this working, machine learning microservi
 
 ---
 
+### Requirements
+
+* CircleCI
+* AWS EKS (Kubernetes)
+* [**circleci/aws-eks@1.1.0s**](https://circleci.com/developer/orbs/orb/circleci/aws-eks)
+* [**circleci/kubernetes@0.4.0**](https://circleci.com/developer/orbs/orb/circleci/kubernetes)
+
+1. Create the CircleCI account
+
+2. Create a GitHub repository
+
+## Install
+
+1. Download or clone this project
+
+2. Push this project to your GitHub repository
+
+3. In CircleCI setup the project.
+
+Once on the Project page, find the project you are using and click Set Up Project.
+
+![set up project](https://github.com/andresaaap/cicd-only-deploying-circleci/blob/main/img/set-up-project.png?raw=true)
+
+According to the AWS EKS orb’s repo it is very important to meet these requirements before running the pipeline:
+
+Add the AWS credentials as environment variables. Configure `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` as CircleCI project or context environment variables as shown in the links provided for [project](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) or [context](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-context).
+
+![create environment variables](https://github.com/andresaaap/cicd-only-deploying-circleci/blob/main/img/create-env-variables.png?raw=true)
+
+Add the policies to the IAM user suggested in the official eksctl website as [Minimum IAM policies](https://eksctl.io/usage/minimum-iam-policies/)
+
+
 ## Setup the Environment
 
 * Create a virtualenv with Python 3.7 and activate it. Refer to this link for help on specifying the Python version in the virtualenv. 
@@ -35,20 +67,106 @@ python3 -m pip install --user virtualenv
 # You should have Python 3.7 available in your host. 
 # Check the Python path using `which python3`
 # Use a command similar to this one:
-python3 -m virtualenv --python=<path-to-Python3.7> .udaproject3
-source .udaproject3/bin/activate
+python3 -m virtualenv --python=<path-to-Python3.7> .virtualenv
+source .virtualenv/bin/activate
 ```
 * Run `make install` to install the necessary dependencies
 
-### Running `app.py`
+* Create a virtualenv and activate it
+   ```
+   python3 -m venv virtualenv
+   . virtualenv/bin/activate
+   ```
+* Run `make install` to install the necessary dependencies
+  ```
+  pip install --upgrade pip &&\
+	pip install -r requirements.txt &&\
+	sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+	sudo chmod +x /bin/hadolint
+  ```
 
-1. Standalone:  `python app.py`
-2. Run in Docker:  `./run_docker.sh`
-3. Run in Kubernetes:  `./run_kubernetes.sh`
+## Lint the App `make lint`
+  ```
+  hadolint Dockerfile --ignore DL4000
+	pylint --disable=R,C,W1203,W1202 app.py
+  ```
 
-### Kubernetes Steps
+## Creating the infrastructure using orbs circleci/aws-eks@1.0.3
+  ```
+  aws-eks/create-cluster:
+        cluster-name: sunil-eks-cluster
+  ```
 
-* Setup and Configure Docker locally
-* Setup and Configure Kubernetes locally
-* Create Flask app in Container
-* Run via kubectl
+## Creating the deployment steps with aws-eks/python3 executor
+  ```
+  - kubernetes/install
+  - aws-eks/update-kubeconfig-with-authenticator:
+      cluster-name: << parameters.cluster-name >>
+      install-kubectl: true
+  - kubernetes/create-or-update-resource:
+      get-rollout-status: true
+      resource-file-path: project5-app-deployment.yml
+      resource-name: deployment/sunilapp
+
+    - kubernetes/create-or-update-resource:
+        resource-file-path: "deployment/project5-lb.yml"
+        resource-name: deployment/sunilapp        
+  ```
+  
+## Update the container image using `aws-eks/update-container-image`
+  ```
+  aws-eks/update-container-image:
+    cluster-name: sunilapp
+    container-image-updates: sunilapp=mrsunilmehta/project5
+    post-steps:
+        - kubernetes/delete-resource:
+            resource-names: sunilapp
+            resource-types: deployment
+            wait: true
+    record: true
+    requires:
+        - create-deployment
+    resource-name: deployment/sunilapp
+  ```
+
+## Testing the cluster steps
+  ```
+  - kubernetes/install
+  - aws-eks/update-kubeconfig-with-authenticator:
+      cluster-name: << parameters.cluster-name >>
+  - run:
+      name: Test cluster
+      command: |
+        kubectl get svc
+        kubectl get nodes
+        kubectl get deployment
+  ```
+
+## Usage
+
+Run the Pipeline by pushing a new commit to the GitHub repository or manually in the project’s GUI in CircleCI
+
+## Screenshots
+
+* **validate-cluster.png**: Shows that after creating the cluster, everything is correctly set and available through the Circle server.
+* **kops-cluster.png**: To check that we do have instances running as master and nodes.
+* **circleci-success.png**: With all the steps of the pipeline succeeding.
+* **lint-step.png**: With the details of the linting step, to check both Python and Dockerfiles.
+* **k8s-services**: With the result of the correct deployment of the kubernetes templates.
+* **load-balancer-service**: Showing the details of the flask service created as a Load Balancer.
+* **test-k8**: Testing the deployed application.
+
+ ## References
+ - https://circleci.com/developer/orbs/orb/circleci/kubernetes
+ - https://circleci.com/developer/orbs/orb/circleci/aws-eks
+
+
+<!-- CONTACT -->
+## Contact
+
+Sunil Mehta - [@SunilMehta](https://www.linkedin.com/in/sunilmehta/)
+
+<!-- Acknowledgement -->
+## Acknowledgements
+
+Special thanks to Udacity and NatWest for providing this opportunity.
