@@ -175,8 +175,8 @@ jobs:
           ssh-access: false
           ssh-public-key: ''
       # Here's where you will add some code to rollback on failure
-      - delete-cluster:
-          cluster-name: sunil-eks-cluster           
+      #- delete-cluster:
+      #    cluster-name: sunil-eks-cluster           
                  
 
   deploy-app:
@@ -212,8 +212,8 @@ jobs:
             kubectl get deployment
             kubectl get pods -o wide
       # Here's where you will add some code to rollback on failure
-      - delete-cluster:
-          cluster-name: sunil-eks-cluster             
+      #- delete-cluster:
+      #    cluster-name: sunil-eks-cluster             
 
 
   test-cluster:
@@ -234,8 +234,8 @@ jobs:
             kubectl get nodes
             kubectl get deployment
       # Here's where you will add some code to rollback on failure
-      - delete-cluster:
-          cluster-name: sunil-eks-cluster                         
+      #- delete-cluster:
+      #    cluster-name: sunil-eks-cluster                         
                    
 
 workflows:
@@ -257,7 +257,7 @@ workflows:
           cluster-name: sunil-eks-cluster
           requires:
             - create-eks-cluster          
-      - delete-cluster:
-          cluster-name: sunil-eks-cluster
-          requires:
-            - deploy-app          
+      #- delete-cluster:
+      #    cluster-name: sunil-eks-cluster
+      #    requires:
+      #      - deploy-app          
