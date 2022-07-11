@@ -49,7 +49,7 @@ Your project goal is to operationalize this working, machine learning microservi
 
 Once on the Project page, find the project you are using and click Set Up Project.
 
-![set up project](https://github.com/andresaaap/cicd-only-deploying-circleci/blob/main/img/set-up-project.png?raw=true)
+![set up project](https://github.com/mrsunilmehta/SunilUdacityProject5/blob/main/Screenshots/Circleci%20project.jpg)
 
 According to the AWS EKS orb’s repo it is very important to meet these requirements before running the pipeline:
 

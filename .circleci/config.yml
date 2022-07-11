@@ -231,6 +231,7 @@ workflows:
   deployment:
     jobs:
       - install
+      - create-eks-cluster
       - push-image:
           requires:
             - install      
