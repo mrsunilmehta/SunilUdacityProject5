@@ -136,7 +136,7 @@ jobs:
           aws-region: ${AWS_DEFAULT_REGION}
           wait: true     
       # delete image as well
-      - delete-image 
+      # - delete-image 
 
 
   create-eks-cluster:
