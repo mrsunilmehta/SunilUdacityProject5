@@ -197,11 +197,11 @@ jobs:
       
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
-          resource-file-path: deployment/project5-app-deployment.yml
+          resource-file-path: "deployment/project5-app-deployment.yml"
           resource-name: deployment/sunilapp
       
       - kubernetes/create-or-update-resource:
-          resource-file-path: deployment/project5-lb.yml
+          resource-file-path: "deployment/project5-lb.yml"
           resource-name: deployment/sunilapp          
       - run:
           name: Test cluster
