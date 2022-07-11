@@ -231,10 +231,14 @@ workflows:
   deployment:
     jobs:
       - install
-      - create-eks-cluster
       - push-image:
           requires:
-            - install      
+            - install    
+      - create-eks-cluster:
+          cluster-name: sunil-eks-cluster      
+          requires:
+            #- install-eks-kubernetes       
+            - install              
       - aws-eks/create-cluster:
           cluster-name: sunil-eks-cluster   
           requires:          
