@@ -1,5 +1,6 @@
 # SunilUdacityProject5
-<include a CircleCI status badge, here>
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mrsunilmehta/SunilUdacityProject5/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mrsunilmehta/SunilUdacityProject5/tree/main)
+
 
 ## Project Overview
 
@@ -54,7 +55,7 @@ According to the AWS EKS orb’s repo it is very important to meet these require
 
 Add the AWS credentials as environment variables. Configure `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` as CircleCI project or context environment variables as shown in the links provided for [project](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) or [context](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-context).
 
-![create environment variables](https://github.com/andresaaap/cicd-only-deploying-circleci/blob/main/img/create-env-variables.png?raw=true)
+![create environment variables](https://github.com/mrsunilmehta/SunilUdacityProject5/blob/main/Screenshots/Circleci%20Env%20Variables.jpg)
 
 Add the policies to the IAM user suggested in the official eksctl website as [Minimum IAM policies](https://eksctl.io/usage/minimum-iam-policies/)
 
