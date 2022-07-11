@@ -157,11 +157,12 @@ jobs:
           Testing EKS cluster
         type: string
     steps:
+      - kubernetes/install    
       - run:
-          name: Test cluster
+          name: Test Sunil cluster
           command: |
             # some time for creation
-            sleep 51          
+            sleep 30          
             kubectl get svc
             kubectl get nodes
             kubectl get deployment
