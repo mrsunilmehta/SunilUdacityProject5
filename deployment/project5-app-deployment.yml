@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: sunilapp
   labels:
-    app: sunil  
+    app: sunilapp  
   namespace: default    
 spec:
   selector:
@@ -21,17 +21,8 @@ spec:
         app: sunilapp
     spec:
       containers:
-      - name: sunilapp
-        image: mrsunilmehta/project5
+        - image: mrsunilmehta/project5
           imagePullPolicy: Always        
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        env:
-        - name: VERSION_INFO
-          value: "VERSION_INFO_VALUE"
-        - name: BUILD_DATE
-          value: "BUILD_DATE_VALUE"
-        ports:
-        - containerPort: 8080
+          name: sunilapp          
+          ports:
+            - containerPort: 8080
