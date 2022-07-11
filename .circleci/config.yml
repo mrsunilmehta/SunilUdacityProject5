@@ -105,7 +105,6 @@ jobs:
             $SUDO mv eksctl_download/eksctl /usr/local/bin/
             rmdir eksctl_download    
 
-
   delete-cluster:
     executor: aws-eks/python3
     parameters:
@@ -114,9 +113,6 @@ jobs:
           deleting EKS cluster
         type: string
     steps:
-      - checkout
-      - aws-eks/install-aws-iam-authenticator:
-          release-tag: ''
       - run:
           name: Delete EKS and stack
           # Add when this will run
@@ -141,6 +137,7 @@ jobs:
           wait: true     
       # delete image as well
       - delete-image 
+
 
   create-eks-cluster:
     executor: aws-eks/python3
