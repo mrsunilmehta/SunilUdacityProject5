@@ -106,7 +106,7 @@ jobs:
             rmdir eksctl_download    
 
 
-delete-cluster:
+  delete-cluster:
     executor: aws-eks/python3
     parameters:
       cluster-name:
