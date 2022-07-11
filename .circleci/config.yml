@@ -140,13 +140,46 @@ jobs:
           nodes-max: 2
           ssh-access: false
           ssh-public-key: ''
-  delay:
+      # Here's where you will add some code to rollback on failure
+      - delete-cluster:
+          cluster-name: sunil-eks-cluster           
+                 
+
+  deploy-app:
     executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    
     steps:
+      - checkout
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+          aws-region: ${AWS_DEFAULT_REGION}
+      
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment/project5-app-deployment.yml
+          resource-name: deployment/app
+      
+      - kubernetes/create-or-update-resource:
+          resource-file-path: deployment/project5-lb.yml
       - run:
+          name: Test cluster
           command: |
-            sleep 540
-          name: Delay cluster deletion                  
+            # some time for creation
+            sleep 60
+            kubectl get svc
+            kubectl get nodes
+            kubectl get deployment
+            kubectl get pods -o wide
+      # Here's where you will add some code to rollback on failure
+      - delete-cluster:
+          cluster-name: sunil-eks-cluster             
 
 
   test-cluster:
@@ -166,7 +199,9 @@ jobs:
             kubectl get svc
             kubectl get nodes
             kubectl get deployment
-            kubectl get pods -o wide            
+      # Here's where you will add some code to rollback on failure
+      - delete-cluster:
+          cluster-name: sunil-eks-cluster                         
 
   delete-cluster:
     executor: aws-eks/python3
@@ -201,7 +236,7 @@ jobs:
           cluster-name: << parameters.cluster-name >>
           aws-region: ${AWS_DEFAULT_REGION}
           wait: true     
-      # Here's where you will add some code to rollback on failure
+      # delete image as well
       - delete-image 
                  
 
@@ -220,11 +255,11 @@ workflows:
           requires:
             #- install-eks-kubernetes       
             - install
-      - test-cluster:
+      - deploy-app:
           cluster-name: sunil-eks-cluster
           requires:
             - create-eks-cluster          
       - delete-cluster:
           cluster-name: sunil-eks-cluster
           requires:
-            - test-cluster          
+            - deploy-app          
