@@ -92,7 +92,6 @@ jobs:
         description: |
           Sunil EKS Cluster
         type: string
-        
     steps:
       - aws-eks/create-cluster:
           cluster-name: << parameters.cluster-name >>

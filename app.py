@@ -10,7 +10,7 @@ LOG.setLevel(logging.INFO)
 
 @app.route("/")                   # at the end point /
 def hello():  
-    LOG.info("Inside hello function" )                     # call method hello
+    LOG.info("Inside hello function " )                     # call method hello
     return "Sunil Mehta, this is your 5th project"         # which returns "Sunil Mehta, this is your 5th project"
 if __name__ == "__main__":        # on running python app.py
     app.run()                    # run the flask app
