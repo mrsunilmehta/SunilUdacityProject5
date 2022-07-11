@@ -96,7 +96,7 @@ jobs:
             fi
             mkdir -p eksctl_download
             curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
-              | tar xvfz -C eksctl_download
+              | tar xz -C eksctl_download
             chmod +x eksctl_download/eksctl
             SUDO=""
             if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
@@ -110,23 +110,43 @@ jobs:
     parameters:
       cluster-name:
         description: |
-          Sunil EKS Cluster
+          Name of the EKS cluster
         type: string
     steps:
+      - checkout
+      - aws-eks/install-aws-iam-authenticator:
+          release-tag: ''
+      - run:
+          name: Install the eksctl tool
+          command: |
+            if which eksctl > /dev/null; then
+            echo "eksctl is already installed"
+            exit 0
+            fi
+            mkdir -p eksctl_download
+            curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C eksctl_download
+            chmod +x eksctl_download/eksctl
+            SUDO=""
+            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+            SUDO="sudo"
+            fi
+            $SUDO mv eksctl_download/eksctl /usr/local/bin/
+            rmdir eksctl_download
       - aws-eks/create-cluster:
           cluster-name: << parameters.cluster-name >>
-          aws-region: ${AWS_DEFAULT_REGION}
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-          install-kubectl: true
-          aws-region: ${AWS_DEFAULT_REGION}          
-      - kubernetes/create-or-update-resource:
-          get-rollout-status: true
-          resource-file-path: deployment/project5-app-deployment.yml
-          resource-name: deployment/sunilproject5  
-      - kubernetes/create-or-update-resource:
-          resource-file-path: deployment/project5-lb.yml
-          resource-name: deployment/sunilproject5                   
+          skip-kubectl-install: false
+          verbose: 3
+          node-type: t2.small
+          nodes-max: 2
+          ssh-access: false
+          ssh-public-key: ''
+  delay:
+    executor: aws-eks/python3
+    steps:
+      - run:
+          command: |
+            sleep 540
+          name: Delay cluster deletion                  
 
 
   test-cluster:
@@ -170,13 +190,14 @@ workflows:
       - push-image:
           requires:
             - install      
-      - install-eks-kubernetes:
-          requires:
-            - install               
+      #- install-eks-kubernetes:
+      #    requires:
+      #      - install               
       - create-eks-cluster:
           cluster-name: sunil-eks-cluster      
           requires:
-            - install-eks-kubernetes       
+            #- install-eks-kubernetes       
+            - install
       - test-cluster:
           cluster-name: sunil-eks-cluster
           requires:
