@@ -219,7 +219,6 @@ jobs:
             kubectl get deployment
             kubectl get pods -o wide      
 
-
   test-cluster:
     executor: aws-eks/python3
     parameters:
@@ -249,13 +248,9 @@ workflows:
       - push-image:
           requires:
             - install      
-      #- install-eks-kubernetes:
-      #    requires:
-      #      - install               
       - create-eks-cluster:
           cluster-name: sunil-eks-cluster      
           requires:
-            #- install-eks-kubernetes       
             - install
       - deploy-app:
           cluster-name: sunil-eks-cluster
