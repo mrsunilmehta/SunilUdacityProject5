@@ -205,7 +205,7 @@ jobs:
           aws-region: ${AWS_DEFAULT_REGION}
       
       - kubernetes/create-or-update-resource:
-          get-rollout-status: true
+          get-rollout-status: false
           resource-file-path: "deployment/project5-app-deployment.yml"
           resource-name: deployment/sunilapp
           show-kubectl-command: true          
