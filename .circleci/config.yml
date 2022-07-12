@@ -113,10 +113,11 @@ jobs:
           deleting EKS cluster
         type: string
     steps:
+      - checkout
+      - aws-eks/install-aws-iam-authenticator:
+          release-tag: ''
       - run:
-          name: Delete EKS and stack
-          # Add when this will run
-          when: on_fail
+          name: Install the eksctl tool
           command: |
             if which eksctl > /dev/null; then
               echo "eksctl is already installed"
@@ -208,7 +209,6 @@ jobs:
           get-rollout-status: false
           resource-file-path: "deployment/project5-app-deployment.yml"
           resource-name: deployment/sunilapp
-          show-kubectl-command: true          
       - run:
           name: Test cluster 1
           command: |
@@ -218,6 +218,18 @@ jobs:
             kubectl get nodes
             kubectl get deployment
             kubectl get pods -o wide      
+      - kubernetes/create-or-update-resource:
+          resource-file-path: "deployment/project5-lb.yml"
+          resource-name: deployment/sunilapp          
+      - run:
+          name: Test cluster 2
+          command: |
+            # some time for creation
+            sleep 5
+            kubectl get svc
+            kubectl get nodes
+            kubectl get deployment
+            kubectl get pods -o wide    
 
   test-cluster:
     executor: aws-eks/python3
