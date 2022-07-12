@@ -36,17 +36,13 @@ Your project goal is to operationalize this working, machine learning microservi
 * [**circleci/kubernetes@0.4.0**](https://circleci.com/developer/orbs/orb/circleci/kubernetes)
 
 1. Create the CircleCI account
-
 2. Create a GitHub repository
 
 ## Install
 
 1. Download or clone this project
-
 2. Push this project to your GitHub repository
-
 3. In CircleCI setup the project.
-
 Once on the Project page, find the project you are using and click Set Up Project.
 
 ![set up project](https://github.com/mrsunilmehta/SunilUdacityProject5/blob/main/Screenshots/Circleci%20project.jpg)
@@ -122,12 +118,6 @@ source .virtualenv/bin/activate
   aws-eks/update-container-image:
     cluster-name: sunilapp
     container-image-updates: sunilapp=mrsunilmehta/project5
-    post-steps:
-        - kubernetes/delete-resource:
-            resource-names: sunilapp
-            resource-types: deployment
-            wait: true
-    record: true
     requires:
         - create-deployment
     resource-name: deployment/sunilapp
@@ -163,7 +153,6 @@ Run the Pipeline by pushing a new commit to the GitHub repository or manually in
 * **Updated k8 with load balancer.jpg**
 * **Circle CI successful execution of pipeline with deletion.jpg**
 * **Successful execution of delete cluster job**
-
 
 
  ## References
