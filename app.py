@@ -1,14 +1,14 @@
 import logging
-from flask import Flask           # import flask
+from flask import Flask                                   # import flask
 from flask.logging import create_logger
 
 
-app = Flask(__name__)             # create an app instance
+app = Flask(__name__)                                         # create an app instance
 
 LOG = create_logger(app)
 LOG.setLevel(logging.INFO)
 
-@app.route("/")                   # at the end point /
+@app.route("/")                                               # at the end point /
 def hello():  
     LOG.info("Inside hello function  " )                     # call method hello
     return "Sunil Mehta, this is your 5th project"         # which returns "Sunil Mehta, this is your 5th project"

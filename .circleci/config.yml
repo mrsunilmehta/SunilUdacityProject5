@@ -30,14 +30,12 @@ jobs:
     executor: python
     steps:
       - checkout
-
       # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-
       - run:
           name: Install dependencies
           command: |
@@ -52,7 +50,6 @@ jobs:
           paths:
             - ./virtualenv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
-      
       - run:
           name: run lint
           command: |
@@ -136,9 +133,6 @@ jobs:
           cluster-name: << parameters.cluster-name >>
           aws-region: ${AWS_DEFAULT_REGION}
           wait: true     
-      # delete image as well
-      # - delete-image 
-
 
   create-eks-cluster:
     executor: aws-eks/python3
@@ -176,7 +170,7 @@ jobs:
           ssh-access: false
           ssh-public-key: ''    
       - run:
-          name: Test Create cluster $$$$$
+          name: Test Create cluster
           command: |
             # some time for creation
             sleep 5
@@ -184,9 +178,6 @@ jobs:
             kubectl get nodes
             kubectl get deployment
             kubectl get pods -o wide            
-      # Here's where you will add some code to rollback on failure
-      #- delete-cluster:
-      #    cluster-name: sunil-eks-cluster           
                  
 
   deploy-app:
@@ -210,7 +201,7 @@ jobs:
           resource-file-path: "deployment/project5-app-deployment.yml"
           resource-name: deployment/sunilapp
       - run:
-          name: Test cluster 1
+          name: Test App deployment
           command: |
             # some time for creation
             sleep 5
@@ -222,7 +213,7 @@ jobs:
           resource-file-path: "deployment/project5-lb.yml"
           resource-name: deployment/sunilapp          
       - run:
-          name: Test cluster 2
+          name: Test Load balancer deployment
           command: |
             # some time for creation
             sleep 5
@@ -248,9 +239,6 @@ jobs:
             kubectl get svc
             kubectl get nodes
             kubectl get deployment
-      # Here's where you will add some code to rollback on failure
-      #- delete-cluster:
-      #    cluster-name: sunil-eks-cluster                         
                    
 
 workflows:
@@ -268,7 +256,7 @@ workflows:
           cluster-name: sunil-eks-cluster
           requires:
             - create-eks-cluster          
-      - delete-cluster:
-          cluster-name: sunil-eks-cluster
-          requires:
-            - deploy-app          
+      #- delete-cluster:
+      #    cluster-name: sunil-eks-cluster
+      #    requires:
+      #      - deploy-app          
