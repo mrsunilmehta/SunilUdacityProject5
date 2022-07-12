@@ -240,7 +240,6 @@ jobs:
             kubectl get nodes
             kubectl get deployment
                    
-
 workflows:
   deployment:
     jobs:
