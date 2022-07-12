@@ -256,7 +256,7 @@ workflows:
           cluster-name: sunil-eks-cluster
           requires:
             - create-eks-cluster          
-      #- delete-cluster:
-      #    cluster-name: sunil-eks-cluster
-      #    requires:
-      #      - deploy-app          
+      - delete-cluster:
+          cluster-name: sunil-eks-cluster
+          requires:
+            - deploy-app          

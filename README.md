@@ -92,6 +92,9 @@ source .virtualenv/bin/activate
 	pylint --disable=R,C,W1203,W1202 app.py
   ```
 
+## Push image to Docker hub
+[Image public URL](https://hub.docker.com/r/mrsunilmehta/project5)
+
 ## Creating the infrastructure using orbs circleci/aws-eks@1.0.3
   ```
   aws-eks/create-cluster:
@@ -149,13 +152,19 @@ Run the Pipeline by pushing a new commit to the GitHub repository or manually in
 
 ## Screenshots
 
-* **validate-cluster.png**: Shows that after creating the cluster, everything is correctly set and available through the Circle server.
-* **kops-cluster.png**: To check that we do have instances running as master and nodes.
-* **circleci-success.png**: With all the steps of the pipeline succeeding.
-* **lint-step.png**: With the details of the linting step, to check both Python and Dockerfiles.
-* **k8s-services**: With the result of the correct deployment of the kubernetes templates.
-* **load-balancer-service**: Showing the details of the flask service created as a Load Balancer.
-* **test-k8**: Testing the deployed application.
+* **Circleci project.jpg**
+* **Circleci Env Variables.jpg**
+* **Circle CI successful execution of pipeline.jpg**
+* **Lint result.jpg**
+* **Dockerhub.jpg**
+* **Successful push of image.jpg**
+* **Successful creation of eks cluster.jpg**
+* **Updated k8.jpg**
+* **Updated k8 with load balancer.jpg**
+* **Circle CI successful execution of pipeline with deletion.jpg**
+* **Successful execution of delete cluster job**
+
+
 
  ## References
  - https://circleci.com/developer/orbs/orb/circleci/kubernetes
